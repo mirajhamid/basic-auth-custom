@@ -1,9 +1,12 @@
 package com.miraj.basicauthcustom;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @ComponentScan(basePackages = "com.miraj.configs")
 public class BasicAuthController {
 	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public ResponseEntity<OurResponse> getUser() {
+		
+		long start = System.currentTimeMillis();
+    	logger.info("Start Method user ");
 		
 		Random random = new Random();
 		int x =  random.nextInt(10);
@@ -37,6 +45,10 @@ public class BasicAuthController {
 		    response.setUserList(userList);
 		    response.setMessage("Success");
 			response.setStatus("200");
+			
+			Duration duration = Duration.ofMillis(System.currentTimeMillis() - start);
+	    	logger.info("End Method user | duration={}:{}:{}:{}", duration.toHours(), duration.toMinutes(), duration.getSeconds(), duration.toMillis());
+	    	
 	    	return new ResponseEntity<OurResponse>(response, HttpStatus.OK);
 	   
 		}else {
@@ -44,7 +56,11 @@ public class BasicAuthController {
 			OurResponse response = new OurResponse();
 			response.setMessage("error message");
 			response.setStatus("500");
-			return new ResponseEntity<OurResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			
+			Duration duration = Duration.ofMillis(System.currentTimeMillis() - start);
+	    	logger.info("End Method user | duration={}:{}:{}:{}", duration.toHours(), duration.toMinutes(), duration.getSeconds(), duration.toMillis());
+			
+	    	return new ResponseEntity<OurResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		   
 	}
