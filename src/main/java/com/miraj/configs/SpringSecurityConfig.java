@@ -17,11 +17,27 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
     protected void configure(HttpSecurity http) throws Exception
     {
-        http.httpBasic().and().authorizeRequests()
-        .antMatchers("/user").hasRole("USER")
-        .antMatchers("/admin").hasRole("ADMIN")
+//		http.authorizeRequests()
+//	      .anyRequest().authenticated()
+//	      .and().httpBasic();
+
+		http.httpBasic().and().authorizeRequests()
+        .antMatchers("/api/open**")
+        .permitAll()
+        .and()
+        .authorizeRequests()
+        .antMatchers("/api/user").hasRole("USER")
+        .and()
+        .authorizeRequests()
+        .antMatchers("/api/admin").hasRole("ADMIN")
+        .and()
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated()
         .and()
         .csrf().disable();
+		
+		
     }
   
     @Autowired
@@ -31,7 +47,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
         auth.inMemoryAuthentication()
         .withUser("user").password(passwordEncoder().encode("user12345")).roles("USER")
         .and()
-        .withUser("admin").password(passwordEncoder().encode("12345admin")).roles("USER", "ADMIN");
+        .withUser("admin").password(passwordEncoder().encode("12345admin")).roles("ADMIN");
     }
 
     @Bean
